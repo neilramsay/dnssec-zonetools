@@ -1,0 +1,9 @@
+language: python
+sudo: false
+python:
+  - "3.5"
+# command to install dependencies
+install:
+  - travis_retry pip install -r DEPENDENCIES
+# command to run tests
+script: "nose2 -v"
