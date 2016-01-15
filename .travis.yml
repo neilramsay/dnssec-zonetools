@@ -6,4 +6,7 @@ python:
 install:
   - travis_retry pip install -r DEPENDENCIES
 # command to run tests
-script: "nose2 -v"
+script:
+  - pep8 dnssec_zonetools tests
+  - pylint dnssec_zonetools tests
+  - nose2 -v

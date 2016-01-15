@@ -1,2 +1,4 @@
 nose2
+pylint
+pep8
 cryptography
