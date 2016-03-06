@@ -1,3 +1,7 @@
+'''
+Test various DNSSEC cryptography primatives
+'''
+
 import unittest
 import json
 
@@ -10,11 +14,21 @@ import cryptography.hazmat.primitives.hashes as hashes
 
 
 class HashTestCases(unittest.TestCase):
+    '''
+    Test hashing algorithms used in DNSSEC
+    '''
+
     def setUp(self):
+        '''
+        Load JSON file of known hashes of the 'test' word
+        '''
         with open('tests/poc/test_crypto_basics.json') as hashes_file:
             self._hashes = json.load(hashes_file)
 
     def test_hash_sha1(self):
+        '''
+        Test hashing known string with SHA1 hash
+        '''
         digest = hashes.Hash(hashes.SHA1(), backend=openssl)
         digest.update(b'test')
         self.assertEqual(
@@ -23,6 +37,9 @@ class HashTestCases(unittest.TestCase):
         )
 
     def test_hash_sha256(self):
+        '''
+        Test hashing known string with SHA256 hash
+        '''
         digest = hashes.Hash(hashes.SHA256(), backend=openssl)
         digest.update(b'test')
         self.assertEqual(
@@ -31,6 +48,9 @@ class HashTestCases(unittest.TestCase):
         )
 
     def test_hash_sha384(self):
+        '''
+        Test hashing known string with SHA384 hash
+        '''
         digest = hashes.Hash(hashes.SHA384(), backend=openssl)
         digest.update(b'test')
         self.assertEqual(
@@ -39,6 +59,9 @@ class HashTestCases(unittest.TestCase):
         )
 
     def test_hash_sha512(self):
+        '''
+        Test hashing known string with SHA512 hash
+        '''
         digest = hashes.Hash(hashes.SHA512(), backend=openssl)
         digest.update(b'test')
         self.assertEqual(
@@ -48,9 +71,14 @@ class HashTestCases(unittest.TestCase):
 
 
 class RSATestCases(unittest.TestCase):
+    '''
+    Test RSA algorithms
+    '''
+
     def setUp(self):
         '''
-        Test loading PKCS8 file, generated externally by OpenSSL
+        Test loading PKCS8 file, generated externally by OpenSSL.
+        Loads pre-generated RSA signatures for comparison in tets
         '''
         with open('tests/poc/test-rsa.pem', mode='rb') as key_file:
             self._private_key = serialization.load_pem_private_key(
@@ -100,7 +128,14 @@ class RSATestCases(unittest.TestCase):
 
 
 class ECDSA(unittest.TestCase):
+    '''
+    Test Elliptic Curve DSA algorithms
+    '''
+
     def setUp(self):
+        '''
+        Test loading PKCS8 file, generated externally by OpenSSL
+        '''
         with open('tests/poc/test-ec.pem', mode='rb') as key_file:
             self._private_key = serialization.load_pem_private_key(
                 key_file.read(),
@@ -110,6 +145,10 @@ class ECDSA(unittest.TestCase):
             self._public_key = self._private_key.public_key()
 
     def test_ecdsa_sign_verify(self):
+        '''
+        Test Elliptic Curve DSA signing of message, and then verification.
+        Unable to split in to separate sign, and verify steps due to some time based code
+        '''
         message = b'test'
 
         signer = self._private_key.signer(
@@ -128,9 +167,6 @@ class ECDSA(unittest.TestCase):
         )
         verifier.update(message)
         self.assertTrue(verifier.verify())
-
-    def test_ecdsa_verify(self):
-        pass
 
 if __name__ == '__main__':
     unittest.main()
