@@ -147,7 +147,8 @@ class ECDSA(unittest.TestCase):
     def test_ecdsa_sign_verify(self):
         '''
         Test Elliptic Curve DSA signing of message, and then verification.
-        Unable to split in to separate sign, and verify steps due to some time based code
+        Unable to split in to separate sign, and verify steps due to some
+        time based code
         '''
         message = b'test'
 
